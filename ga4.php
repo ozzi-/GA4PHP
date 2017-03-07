@@ -21,17 +21,17 @@ function sendGA($tId, $hostname, $path, $title, $source="web", $connectTimeout=2
     $baseGAurl = 'http://www.google-analytics.com/collect?';
     $parameters = array();
 		
-	if(!function_exists( 'curl_init' ) ) {
-		die("curl not available");
-	}
+    if(!function_exists( 'curl_init' ) ) {
+        die("curl not available");
+    }
 	
-	// Protocol Version
+    // Protocol Version
     $parameters['v'] = '1'; 
-	// Google Tracking ID
+    // Google Tracking ID
     $parameters['tid'] = $tId; 
-	// Data Source 
+    // Data Source 
     $parameters['ds'] = $source;
-	// Hit type 
+    // Hit type 
     $parameters['t'] = "pageview";
     // Specifies the hostname from which content was hosted.
     $parameters['dh'] = $hostname; 
@@ -39,34 +39,34 @@ function sendGA($tId, $hostname, $path, $title, $source="web", $connectTimeout=2
     $parameters['dp'] = $path;
     //Tracking Title
     $parameters['dt'] = urlencode($title);
-	// IP anonymization 
-	$parameters['aip'] = '1'; 
-	// Client ID "fingerprint"
-	$parameters['cid'] = hash("sha256",$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'],false); 
+    // IP anonymization 
+    $parameters['aip'] = '1'; 
+    // Client ID "fingerprint"
+    $parameters['cid'] = hash("sha256",$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'],false); 
     $parameters['qt'] = 0;
-	// Override IP, else the origin would be the server itself
+    // Override IP, else the origin would be the server itself
     $parameters['uip'] = $_SERVER['REMOTE_ADDR'];
-	// Override user agent, for the same reason as above
+    // Override user agent, for the same reason as above
     $parameters['ua'] = urlencode($_SERVER['HTTP_USER_AGENT']); 
     //Document Referrer
     if(isset( $_SERVER['HTTP_REFERER'] )){
-		$parameters['dr'] = $_SERVER['HTTP_REFERER'];
-	}
+        $parameters['dr'] = $_SERVER['HTTP_REFERER'];
+    }
 
-	$gaCall = $baseGAurl;
+    $gaCall = $baseGAurl;
     foreach($parameters as $key => $value) {
         $gaCall.= "$key=$value&";
     }
     $gaCall = substr($gaCall, 0, -1); // remove last &
 	
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $gaCall);
-	curl_setopt($ch, CURLOPT_HEADER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); // Checking the server certificate is important
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connectTimeout); // Seconds to wait while trying to connect
-	curl_setopt($ch, CURLOPT_TIMEOUT, 1);	// We do not really care about the response
-	curl_exec($ch);
-	curl_close($ch);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $gaCall);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); // Checking the server certificate is important
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connectTimeout); // Seconds to wait while trying to connect
+    curl_setopt($ch, CURLOPT_TIMEOUT, 1); // We do not really care about the response, setting minimum timeout
+    curl_exec($ch);
+    curl_close($ch);
 }
 ?>
