@@ -36,7 +36,7 @@ function sendGA($tId, $hostname, $path, $title, $source="web", $connectTimeout=2
     // Specifies the hostname from which content was hosted.
     $parameters['dh'] = $hostname; 
     // Tracking Path
-    $parameters['dp'] = $path;
+    $parameters['dp'] = urlencode($path);
     //Tracking Title
     $parameters['dt'] = urlencode($title);
     // IP anonymization 
